@@ -1,0 +1,8 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "env": {
+    "NODE_OPTIONS": "--require dotenv/config --no-warnings=ExperimentalWarning"
+  },
+  "exec": "node --loader ts-node/esm src/index.ts"
+}
