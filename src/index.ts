@@ -1,8 +1,8 @@
-import express, { urlencoded } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
-import logger from './utils/logger';
+import logger from './utils/logger.js';
 import helmet from 'helmet';
 import { getReasonPhrase } from 'http-status-codes';
 
@@ -26,7 +26,7 @@ app.use(
 
 app.use(helmet());
 app.use(cors());
-app.use(urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT ?? 3000;
 app.listen(port, () => logger.info(`Server is running on port ${port}`));

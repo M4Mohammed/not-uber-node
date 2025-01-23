@@ -2,6 +2,7 @@
   "name": "not-uber-node",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon",
     "build": "tsc",
