@@ -14,3 +14,139 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum UserType {
+  ADMIN
+  DRIVER
+  PASSENGER
+}
+
+enum DriverStatus {
+  ONLINE
+  OFFLINE
+}
+
+model Driver {
+  //metadata
+  id          String   @id @default(uuid(7)) @db.VarChar
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamp
+  email       String   @unique @db.VarChar
+  firstName   String   @map("first_name") @db.VarChar
+  lastName    String   @map("last_name") @db.VarChar
+  dateOfBirth DateTime @map("date_of_birth") @db.Timestamp
+  gender      String   @db.VarChar()
+  nationalId  String   @map("national_id") @db.VarChar
+  city        String   @db.VarChar
+  state       String   @db.VarChar
+  phoneNumber String   @unique @map("phone_number") @db.VarChar
+  password    String   @db.VarChar
+
+  //driver profile
+  licenseNumber String       @unique @map("license_number") @db.VarChar
+  status        DriverStatus @map("driver_license")
+  rating        Decimal      @default(0)
+  userType      UserType     @map("user_type")
+  trip          Trip[]
+
+  @@index([id])
+}
+
+model Vehicle {
+  id           String   @id @default(uuid(7)) @db.VarChar
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamp
+  make         String   @db.VarChar
+  model        String   @db.VarChar
+  year         Int      @db.Integer
+  licensePlate String   @unique @map("license_plate") @db.VarChar
+  vehicleClass String   @map("vehicle_class") @db.VarChar
+  seatCapacity Int      @map("seat_capacity") @db.Integer
+  hasAC        Boolean  @map("has_ac") @db.Boolean
+  trip         Trip[]
+
+  @@index([id])
+  @@map("vehicles")
+}
+
+enum RideStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  SCHEDULED
+}
+
+model Trip {
+  id                       String     @id @default(uuid(7)) @db.VarChar
+  createdAt                DateTime   @default(now()) @map("created_at") @db.Timestamp
+  updatedAt                DateTime   @updatedAt @map("updated_at") @db.Timestamp
+  driver                   Driver     @relation(fields: [driverId], references: [id])
+  driverId                 String     @map("driver_id") @db.VarChar
+  vehicle                  Vehicle    @relation(fields: [vehicleId], references: [id])
+  vehicleId                String     @map("vehicle_id") @db.VarChar
+  tripType                 TripType   @relation(fields: [tripTypeId], references: [id])
+  tripTypeId               String     @map("trip_type") @db.VarChar
+  fare                     FareRule   @relation(fields: [fareId], references: [id])
+  fareId                   String     @map("fare_id") @db.VarChar
+  startTime                DateTime   @map("start_time") @db.Timestamp
+  endTime                  DateTime   @map("end_time") @db.Timestamp
+  duration                 DateTime   @db.Timestamp
+  waitingTime              Decimal    @map("waiting_time") @db.Decimal
+  startLocation            String     @map("start_location") @db.VarChar
+  startLocationCoordinates Json       @map("start_location_coordinates") @db.JsonB
+  endLocation              String     @map("end_location") @db.VarChar
+  endLocationCoordinates   Json       @map("end_location_coordinates") @db.JsonB
+  distance                 Decimal    @db.Decimal
+  status                   RideStatus @default(SCHEDULED)
+  totalFare                Decimal    @map("total_fare") @db.Decimal
+  comment                  String?    @db.VarChar
+  cancelReason             String?    @map("cancel_reason") @db.VarChar
+
+  @@index([id])
+  @@map("trips")
+}
+
+model TripType {
+  id          String             @id @default(uuid(7)) @db.VarChar
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime           @updatedAt @map("updated_at") @db.Timestamp
+  name        String             @unique @db.VarChar
+  description String             @db.VarChar
+  baseFare    Decimal            @map("base_fare") @db.Decimal
+  costPerKm   Decimal            @map("cost_per_km") @db.Decimal
+  costPerMin  Decimal            @map("cost_per_min") @db.Decimal
+  minFare     Decimal            @map("min_fare") @db.Decimal
+  maxFare     Decimal            @map("max_fare") @db.Decimal
+  fareRules   FareRule[]         @relation("TripTypeFareRule")
+  trip        Trip[]
+  fareRule    TripTypeFareRule[]
+
+  @@index([id])
+  @@map("trip_types")
+}
+
+model FareRule {
+  id         String             @id @default(uuid(7)) @db.VarChar
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamp
+  updatedAt  DateTime           @updatedAt @map("updated_at") @db.Timestamp
+  name       String             @db.VarChar
+  condition  Json               @db.JsonB
+  action     Json               @db.JsonB
+  trip       Trip[]
+  TripType   TripType[]         @relation("TripTypeFareRule")
+  tripTypeId String?            @db.VarChar
+  tripType   TripTypeFareRule[]
+
+  @@index([id])
+  @@map("fare_rules")
+}
+
+model TripTypeFareRule {
+  tripTypeId String   @map("trip_type_id") @db.VarChar
+  fareRuleId String   @map("fare_rule_id") @db.VarChar
+  tripType   TripType @relation(fields: [tripTypeId], references: [id])
+  fareRule   FareRule @relation(fields: [fareRuleId], references: [id])
+
+  @@id([tripTypeId, fareRuleId])
+  @@map("trip_type_fare_rules")
+}
