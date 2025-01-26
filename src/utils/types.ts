@@ -11,6 +11,7 @@ export class PaginatedResponse<T> {
       itemsPerPage: number;
       totalItems: number;
       totalPages: number;
-    }
-  ) {}
+    },
+  ) {
+  }
 }

@@ -5,7 +5,7 @@ import { PaginatedResponse } from '../utils/types.js';
 
 class DriverController {
 
-  findDrivers = async (req: Request, res: Response, next: NextFunction) => {
+  findDrivers = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const page = Number(req.query.page) || 1;
     const size = Number(req.query.size) || 10;
 
@@ -29,7 +29,7 @@ class DriverController {
     }
   };
 
-  findDriverById = async (req: Request, res: Response, next: NextFunction) => {
+  findDriverById = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { driverId } = req.params;
     try {
       const driver = await driverService.findDriverById(driverId);
