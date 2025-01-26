@@ -5,6 +5,8 @@ import cors from 'cors';
 import logger from './utils/logger.js';
 import helmet from 'helmet';
 import { getReasonPhrase } from 'http-status-codes';
+import driverRouter from './drivers/driver.router.js';
+import errorHandler from './middlewares/error.handler.js';
 
 dotenv.config();
 const app = express();
@@ -27,6 +29,10 @@ app.use(
 app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/v1/drivers', driverRouter);
+
+app.use(errorHandler);
 
 const port = process.env.PORT ?? 3000;
 app.listen(port, () => logger.info(`Server is running on port ${port}`));
