@@ -1,5 +1,6 @@
 import prisma from '../utils/database.client.js';
 import { PaginationParams } from '../utils/types.js';
+import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dtos.js';
 
 class DriverService {
 
@@ -22,6 +23,18 @@ class DriverService {
 
   findDriverById = async (id: string) => {
     return prisma.driver.findFirst({ where: { id } });
+  };
+
+  createDriver = async (createDriverDto: CreateDriverDto) => {
+    return prisma.driver.create({ data: createDriverDto });
+  };
+
+  updateDriver = async (updateDriverDto: UpdateDriverDto) => {
+    return prisma.driver.update({ where: { id: updateDriverDto.id }, data: updateDriverDto });
+  };
+
+  deleteDriver = async (id: string) => {
+    return prisma.driver.delete({ where: { id } });
   };
 
 }

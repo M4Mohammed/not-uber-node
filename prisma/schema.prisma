@@ -44,9 +44,8 @@ model Driver {
 
   //driver profile
   licenseNumber String       @unique @map("license_number") @db.VarChar
-  status        DriverStatus @map("driver_license")
+  status        DriverStatus
   rating        Decimal      @default(0)
-  userType      UserType     @map("user_type")
   trip          Trip[]
 
   @@index([id])
