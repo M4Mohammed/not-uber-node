@@ -3,7 +3,7 @@ import driverController from './driver.controller.js';
 import { validate } from '../middlewares/validation.middleware.js';
 import { createDriverSchema, findDriverByIdSchema, updateDriverSchema } from './driver.schema.js';
 
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
 router.get('/', driverController.findDrivers);
 
