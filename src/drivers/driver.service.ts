@@ -1,6 +1,6 @@
 import prisma from '../utils/database.client.js';
 import { PaginationParams } from '../utils/types.js';
-import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dtos.js';
+import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverService {
 

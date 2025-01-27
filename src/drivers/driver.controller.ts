@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { PaginatedResponse } from '../utils/types.js';
 import driverService from './driver.service.js';
-import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dtos.js';
+import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverController {
 
@@ -31,9 +31,9 @@ class DriverController {
   };
 
   findDriverById = async (req: Request, res: Response, next: NextFunction) => {
-    const { driverId } = req.params;
+    const { id } = req.params;
     try {
-      const driver = await driverService.findDriverById(driverId);
+      const driver = await driverService.findDriverById(id);
 
       return res.status(StatusCodes.OK).json({ driver });
     } catch (error) {
@@ -62,9 +62,9 @@ class DriverController {
   };
 
   deleteDriver = async (req: Request, res: Response, next: NextFunction) => {
-    const { driverId } = req.params;
+    const { id } = req.params;
     try {
-      await driverService.deleteDriver(driverId);
+      await driverService.deleteDriver(id);
 
       return res.status(StatusCodes.NO_CONTENT).json({ message: 'Shit was deleted' });
     } catch (error) {
