@@ -26,8 +26,26 @@ enum DriverStatus {
   OFFLINE
 }
 
+model Rider {
+  id          String   @id @default(uuid(7)) @db.VarChar
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamp
+  firstName   String   @map("first_name") @db.VarChar
+  lastName    String   @map("last_name") @db.VarChar
+  email       String   @unique @db.VarChar
+  password    String   @db.VarChar
+  dateOfBirth DateTime @map("date_of_birth") @db.Timestamp
+  gender      String   @db.VarChar
+  nationalId  String   @map("national_id") @db.VarChar
+  phoneNumber String   @unique @map("phone_number") @db.VarChar
+  rating      Decimal  @default(0) @db.Decimal
+  trip        Trip[]
+
+  @@index([id])
+  @@map("riders")
+}
+
 model Driver {
-  //metadata
   id          String   @id @default(uuid(7)) @db.VarChar
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamp
@@ -35,7 +53,7 @@ model Driver {
   firstName   String   @map("first_name") @db.VarChar
   lastName    String   @map("last_name") @db.VarChar
   dateOfBirth DateTime @map("date_of_birth") @db.Timestamp
-  gender      String   @db.VarChar()
+  gender      String   @db.VarChar
   nationalId  String   @map("national_id") @db.VarChar
   city        String   @db.VarChar
   state       String   @db.VarChar
@@ -45,7 +63,7 @@ model Driver {
   //driver profile
   licenseNumber String       @unique @map("license_number") @db.VarChar
   status        DriverStatus
-  rating        Decimal      @default(0)
+  rating        Decimal      @default(0) @db.Decimal
   trip          Trip[]
 
   @@index([id])
@@ -81,6 +99,8 @@ model Trip {
   updatedAt                DateTime   @updatedAt @map("updated_at") @db.Timestamp
   driver                   Driver     @relation(fields: [driverId], references: [id])
   driverId                 String     @map("driver_id") @db.VarChar
+  rider                    Rider      @relation(fields: [riderId], references: [id])
+  riderId                  String     @map("rider_id") @db.VarChar
   vehicle                  Vehicle    @relation(fields: [vehicleId], references: [id])
   vehicleId                String     @map("vehicle_id") @db.VarChar
   tripType                 TripType   @relation(fields: [tripTypeId], references: [id])
@@ -116,7 +136,6 @@ model TripType {
   costPerMin  Decimal            @map("cost_per_min") @db.Decimal
   minFare     Decimal            @map("min_fare") @db.Decimal
   maxFare     Decimal            @map("max_fare") @db.Decimal
-  fareRules   FareRule[]         @relation("TripTypeFareRule")
   trip        Trip[]
   fareRule    TripTypeFareRule[]
 
@@ -132,7 +151,6 @@ model FareRule {
   condition  Json               @db.JsonB
   action     Json               @db.JsonB
   trip       Trip[]
-  TripType   TripType[]         @relation("TripTypeFareRule")
   tripTypeId String?            @db.VarChar
   tripType   TripTypeFareRule[]
 
