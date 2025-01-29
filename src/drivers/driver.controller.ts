@@ -1,20 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { PaginatedResponse } from '../utils/types.js';
+import { PaginatedResponse, PaginationParams } from '../utils/types.js';
 import driverService from './driver.service.js';
 import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverController {
 
-  findDrivers = async (req: Request, res: Response, next: NextFunction) => {
-    const page = Number(req.query.page) || 1;
-    const size = Number(req.query.size) || 10;
-
+  findDrivers = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
     try {
-      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers({
-        page,
-        size,
-      });
+      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers(req.query);
 
       return res.status(StatusCodes.OK).json(new PaginatedResponse(
         drivers,

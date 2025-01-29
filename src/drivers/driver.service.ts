@@ -4,7 +4,7 @@ import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverService {
 
-  findAllDrivers = async ({ page, size }: PaginationParams) => {
+  findAllDrivers = async ({ page = 1, size = 10 }: PaginationParams) => {
     const count = await prisma.driver.count();
 
     const drivers = await prisma.driver.findMany({
