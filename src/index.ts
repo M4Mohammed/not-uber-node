@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { getReasonPhrase } from 'http-status-codes';
 import driverRouter from './drivers/driver.router.js';
 import errorHandler from './middlewares/error.handler.js';
+import riderRouter from './riders/rider.router.js';
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/drivers', driverRouter);
+app.use('/api/v1/riders', riderRouter);
 
 app.use(errorHandler);
 
