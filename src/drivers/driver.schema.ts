@@ -19,8 +19,6 @@ export const createDriverSchema = z.object({
     phoneNumber: z.string().length(11),
     password: z.string(),
     licenseNumber: z.string(),
-    status: z.enum(['ONLINE', 'OFFLINE']),
-    rating: z.number(),
   }),
 });
 
