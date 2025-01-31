@@ -33,9 +33,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/drivers', driverRouter);
 app.use('/api/v1/riders', riderRouter);
+app.use('/api/v1/auth');
 
 app.use(errorHandler);
 
 const port = process.env.PORT ?? 3000;
 app.listen(port, () => logger.info(`Server is running on port ${port}`));
-

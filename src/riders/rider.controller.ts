@@ -5,20 +5,18 @@ import { StatusCodes } from 'http-status-codes';
 import { CreateRiderDto, UpdateRiderDto } from './DTOs/rider.dto.js';
 
 class RiderController {
-
   findRiders = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
     try {
       const { riders, currentPage, itemsPerPage, totalItems, totalPages } = await riderService.findAllRiders(req.query);
 
-      return res.status(StatusCodes.OK).json(new PaginatedResponse(
-        riders,
-        {
+      return res.status(StatusCodes.OK).json(
+        new PaginatedResponse(riders, {
           currentPage,
           itemsPerPage,
           totalItems,
           totalPages,
-        },
-      ));
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -65,7 +63,6 @@ class RiderController {
       next(error);
     }
   };
-
 }
 
 export default new RiderController();

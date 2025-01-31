@@ -5,20 +5,20 @@ import driverService from './driver.service.js';
 import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverController {
-
   findDrivers = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
     try {
-      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers(req.query);
+      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers(
+        req.query,
+      );
 
-      return res.status(StatusCodes.OK).json(new PaginatedResponse(
-        drivers,
-        {
+      return res.status(StatusCodes.OK).json(
+        new PaginatedResponse(drivers, {
           currentPage,
           itemsPerPage,
           totalItems,
           totalPages,
-        },
-      ));
+        }),
+      );
     } catch (error) {
       next(error);
     }

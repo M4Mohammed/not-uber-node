@@ -3,12 +3,11 @@ import prisma from '../utils/database.client.js';
 import { CreateRiderDto, UpdateRiderDto } from './DTOs/rider.dto.js';
 
 class RiderService {
-
   findAllRiders = async ({ page = 1, size = 10 }: PaginationParams) => {
     const count = await prisma.rider.count();
 
     const riders = await prisma.rider.findMany({
-      skip: ((page - 1) * size),
+      skip: (page - 1) * size,
       take: size,
     });
 
@@ -17,7 +16,7 @@ class RiderService {
       currentPage: page,
       itemsPerPage: riders.length,
       totalItems: count,
-      totalPages: (count / size),
+      totalPages: count / size,
     };
   };
 

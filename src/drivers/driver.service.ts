@@ -3,12 +3,11 @@ import { PaginationParams } from '../utils/types.js';
 import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverService {
-
   findAllDrivers = async ({ page = 1, size = 10 }: PaginationParams) => {
     const count = await prisma.driver.count();
 
     const drivers = await prisma.driver.findMany({
-      skip: ((page - 1) * size),
+      skip: (page - 1) * size,
       take: size,
     });
 
@@ -36,7 +35,6 @@ class DriverService {
   deleteDriver = async (id: string) => {
     return prisma.driver.delete({ where: { id } });
   };
-
 }
 
 export default new DriverService();
