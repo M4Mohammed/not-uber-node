@@ -62,7 +62,7 @@ model Driver {
 
   //driver profile
   licenseNumber String       @unique @map("license_number") @db.VarChar
-  status        DriverStatus
+  status        DriverStatus @default(ONLINE)
   rating        Decimal      @default(0) @db.Decimal
   trip          Trip[]
 

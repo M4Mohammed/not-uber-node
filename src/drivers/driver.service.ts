@@ -1,6 +1,8 @@
 import prisma from '../utils/database.client.js';
 import { PaginationParams } from '../utils/types.js';
 import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
+import SystemConflictException from '../exceptions/system.conflict.exception.js';
+import { hashPassword } from '../utils/security.utils.js';
 
 class DriverService {
   findAllDrivers = async ({ page = 1, size = 10 }: PaginationParams) => {
@@ -25,7 +27,24 @@ class DriverService {
   };
 
   createDriver = async (createDriverDto: CreateDriverDto) => {
-    return prisma.driver.create({ data: createDriverDto });
+    prisma.$transaction(async (tx) => {
+      const emailExists = await tx.driver.findFirst({ where: { email: createDriverDto.email } });
+      if (emailExists) {
+        throw new SystemConflictException('Email already registered');
+      }
+
+      const phoneNumberExists = await tx.driver.findFirst({ where: { phoneNumber: createDriverDto.phoneNumber } });
+      if (phoneNumberExists) {
+        throw new SystemConflictException('Phone number already registered');
+      }
+
+      const hashedPassword = await hashPassword(createDriverDto.password);
+
+      return tx.driver.create({
+        data: { ...createDriverDto, password: hashedPassword },
+      });
+    });
+
   };
 
   updateDriver = async (updateDriverDto: UpdateDriverDto) => {
