@@ -48,7 +48,22 @@ class RiderService {
   };
 
   updateRider = async (updateRiderDto: UpdateRiderDto) => {
-    return prisma.rider.update({ where: { id: updateRiderDto.id }, data: updateRiderDto });
+    return prisma.$transaction(async (tx) => {
+      const emailExists = await tx.rider.findFirst({ where: { email: updateRiderDto.email } });
+      if (emailExists) {
+        throw new SystemConflictException('Email already registered');
+      }
+
+      const phoneNumberExists = await tx.rider.findFirst({ where: { phoneNumber: updateRiderDto.phoneNumber } });
+      if (phoneNumberExists) {
+        throw new SystemConflictException('Phone number already registered');
+      }
+
+      return tx.rider.update({
+        where: { id: updateRiderDto.id },
+        data: updateRiderDto,
+      });
+    });
   };
 
   deleteRider = async (id: string) => {
