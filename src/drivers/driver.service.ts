@@ -62,9 +62,8 @@ class DriverService {
     });
   };
 
-  //todo: soft delete driver
   deleteDriver = async (id: string) => {
-    return prisma.driver.delete({ where: { id } });
+    return prisma.driver.update({ where: { id }, data: { isDeleted: true } });
   };
 }
 

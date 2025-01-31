@@ -27,18 +27,24 @@ enum DriverStatus {
 }
 
 model Rider {
-  id          String   @id @default(uuid(7)) @db.VarChar
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamp
-  firstName   String   @map("first_name") @db.VarChar
-  lastName    String   @map("last_name") @db.VarChar
-  email       String   @unique @db.VarChar
-  password    String   @db.VarChar
-  dateOfBirth DateTime @map("date_of_birth") @db.Timestamp
-  gender      String   @db.VarChar
-  nationalId  String   @map("national_id") @db.VarChar
-  phoneNumber String   @unique @map("phone_number") @db.VarChar
-  rating      Decimal  @default(0) @db.Decimal
+  id                  String   @id @default(uuid(7)) @db.VarChar
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamp
+  firstName           String   @map("first_name") @db.VarChar
+  lastName            String   @map("last_name") @db.VarChar
+  email               String   @unique @db.VarChar
+  password            String   @db.VarChar
+  dateOfBirth         DateTime @map("date_of_birth") @db.Timestamp
+  refreshTokenVersion Int?     @map("refresh_token_version") @db.Integer
+  isDeleted           Boolean  @default(false) @map("is_deleted") @db.Boolean
+
+  //rider profile
+  gender      String  @db.VarChar
+  city        String  @db.VarChar
+  state       String  @db.VarChar
+  nationalId  String  @map("national_id") @db.VarChar
+  phoneNumber String  @unique @map("phone_number") @db.VarChar
+  rating      Decimal @default(0) @db.Decimal
   trip        Trip[]
 
   @@index([id])
@@ -46,19 +52,21 @@ model Rider {
 }
 
 model Driver {
-  id          String   @id @default(uuid(7)) @db.VarChar
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamp
-  email       String   @unique @db.VarChar
-  firstName   String   @map("first_name") @db.VarChar
-  lastName    String   @map("last_name") @db.VarChar
-  dateOfBirth DateTime @map("date_of_birth") @db.Timestamp
-  gender      String   @db.VarChar
-  nationalId  String   @map("national_id") @db.VarChar
-  city        String   @db.VarChar
-  state       String   @db.VarChar
-  phoneNumber String   @unique @map("phone_number") @db.VarChar
-  password    String   @db.VarChar
+  id                  String   @id @default(uuid(7)) @db.VarChar
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamp
+  email               String   @unique @db.VarChar
+  firstName           String   @map("first_name") @db.VarChar
+  lastName            String   @map("last_name") @db.VarChar
+  dateOfBirth         DateTime @map("date_of_birth") @db.Timestamp
+  gender              String   @db.VarChar
+  nationalId          String   @map("national_id") @db.VarChar
+  city                String   @db.VarChar
+  state               String   @db.VarChar
+  phoneNumber         String   @unique @map("phone_number") @db.VarChar
+  password            String   @db.VarChar
+  refreshTokenVersion Int?     @map("refresh_token_version") @db.Integer
+  isDeleted           Boolean  @default(false) @map("is_deleted") @db.Boolean
 
   //driver profile
   licenseNumber String       @unique @map("license_number") @db.VarChar

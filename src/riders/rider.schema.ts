@@ -16,6 +16,8 @@ export const createRiderSchema = z.object({
     gender: z.string(),
     nationalId: z.string().length(13),
     phoneNumber: z.string().length(11),
+    city: z.string(),
+    state: z.string(),
   }),
 });
 

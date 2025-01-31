@@ -65,9 +65,8 @@ class RiderService {
     });
   };
 
-  //todo: soft delete rider
   deleteRider = async (id: string) => {
-    return prisma.rider.delete({ where: { id } });
+    return prisma.rider.update({ where: { id }, data: { isDeleted: true } });
   };
 }
 
