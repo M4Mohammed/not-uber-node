@@ -44,7 +44,6 @@ class DriverService {
         data: { ...createDriverDto, password: hashedPassword },
       });
     });
-
   };
 
   updateDriver = async (updateDriverDto: UpdateDriverDto) => {
@@ -63,6 +62,7 @@ class DriverService {
     });
   };
 
+  //todo: soft delete driver
   deleteDriver = async (id: string) => {
     return prisma.driver.delete({ where: { id } });
   };

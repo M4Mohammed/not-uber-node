@@ -44,7 +44,6 @@ class RiderService {
         data: { ...createRiderDto, password: hashedPassword },
       });
     });
-
   };
 
   updateRider = async (updateRiderDto: UpdateRiderDto) => {
@@ -66,6 +65,7 @@ class RiderService {
     });
   };
 
+  //todo: soft delete rider
   deleteRider = async (id: string) => {
     return prisma.rider.delete({ where: { id } });
   };
