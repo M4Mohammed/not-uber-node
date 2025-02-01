@@ -3,13 +3,21 @@ import { StatusCodes } from 'http-status-codes';
 import { PaginatedResponse, PaginationParams } from '../utils/types.js';
 import driverService from './driver.service.js';
 import { CreateDriverDto } from './DTOs/driver.dto.js';
+import { any } from 'zod';
 
 class DriverController {
-  findDrivers = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
+  findDrivers = async (req: Request, res: Response, next: NextFunction) => {
+    const page = Number(req.query.page) || 1;
+    const size = Number(req.query.size) || 10;
+
     try {
-      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers(
-        req.query,
-      );
+      const {
+        drivers,
+        currentPage,
+        itemsPerPage,
+        totalItems,
+        totalPages,
+      } = await driverService.findAllDrivers({ page, size });
 
       return res.status(StatusCodes.OK).json(
         new PaginatedResponse(drivers, {

@@ -5,9 +5,14 @@ import { StatusCodes } from 'http-status-codes';
 import { CreateRiderDto } from './DTOs/rider.dto.js';
 
 class RiderController {
-  findRiders = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
+  findRiders = async (req: Request, res: Response, next: NextFunction) => {
+    const page = Number(req.query.page) || 1;
+    const size = Number(req.query.size) || 10;
     try {
-      const { riders, currentPage, itemsPerPage, totalItems, totalPages } = await riderService.findAllRiders(req.query);
+      const { riders, currentPage, itemsPerPage, totalItems, totalPages } = await riderService.findAllRiders({
+        page,
+        size,
+      });
 
       return res.status(StatusCodes.OK).json(
         new PaginatedResponse(riders, {

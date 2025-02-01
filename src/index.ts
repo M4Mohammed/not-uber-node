@@ -8,7 +8,6 @@ import { getReasonPhrase } from 'http-status-codes';
 import driverRouter from './drivers/driver.router.js';
 import errorHandler from './middlewares/error.handler.js';
 import riderRouter from './riders/rider.router.js';
-import authController from './auth/auth.controller.js';
 import authRouter from './auth/auth.router.js';
 
 dotenv.config();

@@ -6,7 +6,7 @@ import { hashPassword } from '../utils/security.utils.js';
 import { UserType } from '@prisma/client';
 
 class DriverService {
-  findAllDrivers = async ({ page = 1, size = 10 }: PaginationParams) => {
+  findAllDrivers = async ({ page, size }: PaginationParams) => {
     const count = await prisma.driver.count();
 
     const drivers = await prisma.driver.findMany({

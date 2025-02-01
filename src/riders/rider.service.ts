@@ -6,7 +6,7 @@ import { hashPassword } from '../utils/security.utils.js';
 import { UserType } from '@prisma/client';
 
 class RiderService {
-  findAllRiders = async ({ page = 1, size = 10 }: PaginationParams) => {
+  findAllRiders = async ({ page, size }: PaginationParams) => {
     const count = await prisma.rider.count();
 
     const riders = await prisma.rider.findMany({

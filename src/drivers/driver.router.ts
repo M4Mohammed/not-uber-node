@@ -4,10 +4,11 @@ import { validate } from '../middlewares/validation.middleware.js';
 import { createDriverSchema, findDriverByIdSchema } from './driver.schema.js';
 import auth from '../middlewares/auth.js';
 import { UserType } from '@prisma/client';
+import { PaginationSchema } from '../utils/types.js';
 
 const router = express.Router();
 
-router.get('/', driverController.findDrivers);
+router.get('/', auth(UserType.DRIVER), validate(PaginationSchema), driverController.findDrivers);
 
 router.get('/:id', validate(findDriverByIdSchema), driverController.findDriverById);
 
