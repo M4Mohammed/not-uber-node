@@ -1,8 +1,9 @@
 import { PaginationParams } from '../utils/types.js';
 import prisma from '../utils/database.client.js';
-import { CreateRiderDto, UpdateRiderDto } from './DTOs/rider.dto.js';
+import { CreateRiderDto } from './DTOs/rider.dto.js';
 import SystemConflictException from '../exceptions/system.conflict.exception.js';
 import { hashPassword } from '../utils/security.utils.js';
+import { UserType } from '@prisma/client';
 
 class RiderService {
   findAllRiders = async ({ page = 1, size = 10 }: PaginationParams) => {
@@ -28,45 +29,44 @@ class RiderService {
 
   createRider = async (createRiderDto: CreateRiderDto) => {
     return prisma.$transaction(async (tx) => {
-      const emailExists = await tx.rider.findFirst({ where: { email: createRiderDto.email } });
-      if (emailExists) {
+      const existingUser = await tx.user.findFirst({ where: { email: createRiderDto.email } });
+      if (existingUser) {
         throw new SystemConflictException('Email already registered');
-      }
-
-      const phoneNumberExists = await tx.rider.findFirst({ where: { phoneNumber: createRiderDto.phoneNumber } });
-      if (phoneNumberExists) {
-        throw new SystemConflictException('Phone number already registered');
       }
 
       const hashedPassword = await hashPassword(createRiderDto.password);
 
-      return tx.rider.create({
-        data: { ...createRiderDto, password: hashedPassword },
+      const user = await tx.user.create({
+        data: {
+          email: createRiderDto.email,
+          password: hashedPassword,
+          userType: UserType.RIDER,
+          firstName: createRiderDto.firstName,
+          lastName: createRiderDto.lastName,
+          gender: createRiderDto.gender,
+          phoneNumber: createRiderDto.phoneNumber,
+          dateOfBirth: createRiderDto.dateOfBirth,
+          nationalId: createRiderDto.nationalId,
+          city: createRiderDto.city,
+          state: createRiderDto.state,
+        },
       });
-    });
-  };
 
-  updateRider = async (updateRiderDto: UpdateRiderDto) => {
-    return prisma.$transaction(async (tx) => {
-      const emailExists = await tx.rider.findFirst({ where: { email: updateRiderDto.email } });
-      if (emailExists) {
-        throw new SystemConflictException('Email already registered');
-      }
-
-      const phoneNumberExists = await tx.rider.findFirst({ where: { phoneNumber: updateRiderDto.phoneNumber } });
-      if (phoneNumberExists) {
-        throw new SystemConflictException('Phone number already registered');
-      }
-
-      return tx.rider.update({
-        where: { id: updateRiderDto.id },
-        data: updateRiderDto,
+      const rider = await tx.rider.create({
+        data: {
+          userId: user.id,
+        },
       });
+
+      return { ...user, ...rider };
     });
   };
 
   deleteRider = async (id: string) => {
-    return prisma.rider.update({ where: { id }, data: { isDeleted: true } });
+    return prisma.$transaction(async (tx) => {
+      await tx.user.update({ where: { id }, data: { isDeleted: true } });
+      await tx.rider.update({ where: { id }, data: { isDeleted: true } });
+    });
   };
 }
 

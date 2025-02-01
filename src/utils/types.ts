@@ -1,10 +1,5 @@
 import jwt from 'jsonwebtoken';
 
-export enum Role {
-  Driver = 'driver',
-  Rider = 'rider',
-}
-
 export interface PaginationParams {
   page: number;
   size: number;

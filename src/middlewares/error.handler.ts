@@ -3,16 +3,15 @@ import { JsonWebTokenError } from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 import AuthenticationException from '../exceptions/authentication.exception.js';
-import SystemConflict from '../exceptions/system.conflict.error.js';
 import NoSuchItemException from '../exceptions/no.such.item.exception.js';
 import AuthorizationException from '../exceptions/authorization.exception.js';
 import SystemException from '../exceptions/system.exception.js';
 import IllegalStateException from '../exceptions/illegal.state.exception.js';
 import { Prisma } from '@prisma/client';
 import logger from '../utils/logger.js';
+import SystemConflictException from '../exceptions/system.conflict.exception.js';
 
-//TODO: change this 'any' to the correct type
-const errorHandler: any = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
+const errorHandler: ErrorRequestHandler = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     logger.error(error.code);
   }
@@ -27,7 +26,7 @@ const errorHandler: any = (error: Error, _req: Request, res: Response, _next: Ne
     return res.status(StatusCodes.NOT_FOUND).json({ message: 'entity not found' });
   } else if (error instanceof IllegalStateException || error instanceof ZodError) {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
-  } else if (error instanceof SystemConflict) {
+  } else if (error instanceof SystemConflictException) {
     return res.status(StatusCodes.CONFLICT).json({ message: error.message });
   } else if (error instanceof SystemException) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { PaginatedResponse, PaginationParams } from '../utils/types.js';
 import driverService from './driver.service.js';
-import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
+import { CreateDriverDto } from './DTOs/driver.dto.js';
 
 class DriverController {
   findDrivers = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
@@ -40,16 +40,6 @@ class DriverController {
       const createdDriver = await driverService.createDriver(req.body);
 
       return res.status(StatusCodes.CREATED).json({ createdDriver });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  updateDriver = async (req: Request<{}, {}, UpdateDriverDto>, res: Response, next: NextFunction) => {
-    try {
-      const updatedDriver = await driverService.updateDriver(req.body);
-
-      return res.status(StatusCodes.OK).json({ updatedDriver });
     } catch (error) {
       next(error);
     }

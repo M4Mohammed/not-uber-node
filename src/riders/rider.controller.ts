@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import riderService from './rider.service.js';
 import { PaginatedResponse, PaginationParams } from '../utils/types.js';
 import { StatusCodes } from 'http-status-codes';
-import { CreateRiderDto, UpdateRiderDto } from './DTOs/rider.dto.js';
+import { CreateRiderDto } from './DTOs/rider.dto.js';
 
 class RiderController {
   findRiders = async (req: Request<{}, {}, {}, PaginationParams>, res: Response, next: NextFunction) => {
@@ -38,16 +38,6 @@ class RiderController {
       const createdRider = await riderService.createRider(req.body);
 
       return res.status(StatusCodes.CREATED).json({ createdRider });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  updateRider = async (req: Request<{}, {}, UpdateRiderDto>, res: Response, next: NextFunction) => {
-    try {
-      const updatedRider = await riderService.updateRider(req.body);
-
-      return res.status(StatusCodes.OK).json({ updatedRider });
     } catch (error) {
       next(error);
     }

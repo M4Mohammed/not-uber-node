@@ -8,7 +8,7 @@ class AuthController {
     try {
       const tokens = await authService.login(req.body);
 
-      return res.status(StatusCodes.OK).json({ tokens });
+      return res.status(StatusCodes.OK).json(tokens);
     } catch (error) {
       next(error);
     }

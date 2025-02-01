@@ -1,8 +1,9 @@
 import prisma from '../utils/database.client.js';
 import { PaginationParams } from '../utils/types.js';
-import { CreateDriverDto, UpdateDriverDto } from './DTOs/driver.dto.js';
+import { CreateDriverDto } from './DTOs/driver.dto.js';
 import SystemConflictException from '../exceptions/system.conflict.exception.js';
 import { hashPassword } from '../utils/security.utils.js';
+import { UserType } from '@prisma/client';
 
 class DriverService {
   findAllDrivers = async ({ page = 1, size = 10 }: PaginationParams) => {
@@ -28,42 +29,45 @@ class DriverService {
 
   createDriver = async (createDriverDto: CreateDriverDto) => {
     return prisma.$transaction(async (tx) => {
-      const emailExists = await tx.driver.findFirst({ where: { email: createDriverDto.email } });
-      if (emailExists) {
+      const existingUser = await tx.user.findFirst({ where: { email: createDriverDto.email } });
+      if (existingUser) {
         throw new SystemConflictException('Email already registered');
-      }
-
-      const phoneNumberExists = await tx.driver.findFirst({ where: { phoneNumber: createDriverDto.phoneNumber } });
-      if (phoneNumberExists) {
-        throw new SystemConflictException('Phone number already registered');
       }
 
       const hashedPassword = await hashPassword(createDriverDto.password);
 
-      return tx.driver.create({
-        data: { ...createDriverDto, password: hashedPassword },
+      const user = await tx.user.create({
+        data: {
+          email: createDriverDto.email,
+          password: hashedPassword,
+          userType: UserType.DRIVER,
+          firstName: createDriverDto.firstName,
+          lastName: createDriverDto.lastName,
+          gender: createDriverDto.gender,
+          phoneNumber: createDriverDto.phoneNumber,
+          dateOfBirth: createDriverDto.dateOfBirth,
+          nationalId: createDriverDto.nationalId,
+          city: createDriverDto.city,
+          state: createDriverDto.state,
+        },
       });
-    });
-  };
 
-  updateDriver = async (updateDriverDto: UpdateDriverDto) => {
-    return prisma.$transaction(async (tx) => {
-      const emailExists = await tx.driver.findFirst({ where: { email: updateDriverDto.email } });
-      if (emailExists) {
-        throw new SystemConflictException('Email already registered');
-      }
+      const driver = await tx.driver.create({
+        data: {
+          licenseNumber: createDriverDto.licenseNumber,
+          userId: user.id,
+        },
+      });
 
-      const phoneNumberExists = await tx.driver.findFirst({ where: { phoneNumber: updateDriverDto.phoneNumber } });
-      if (phoneNumberExists) {
-        throw new SystemConflictException('Phone number already registered');
-      }
-
-      return tx.driver.update({ where: { id: updateDriverDto.id }, data: updateDriverDto });
+      return { ...user, ...driver };
     });
   };
 
   deleteDriver = async (id: string) => {
-    return prisma.driver.update({ where: { id }, data: { isDeleted: true } });
+    return prisma.$transaction(async (tx) => {
+      await tx.driver.update({ where: { id }, data: { isDeleted: true } });
+      await tx.user.update({ where: { id }, data: { isDeleted: true } });
+    });
   };
 }
 

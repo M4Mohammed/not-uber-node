@@ -8,14 +8,6 @@ const prisma: PrismaClient =
   global.prisma ||
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'],
-    omit: {
-      driver: {
-        password: true,
-      },
-      rider: {
-        password: true,
-      },
-    },
   });
 
 if (process.env.NODE_ENV !== 'production') {

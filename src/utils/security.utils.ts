@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
-import { DecodedToken, Role } from './types.js';
+import { DecodedToken } from './types.js';
+import { UserType } from '@prisma/client';
 
 export const verifyPassword = async (plainPassword: string, hashedPassword: string) => {
   return argon2.verify(plainPassword, hashedPassword);
@@ -15,16 +16,27 @@ export const hashPassword = async (plainPassword: string) => {
   });
 };
 
-//todo: add refresh token
-export const generateToken = (sub: string, role: Role) => {
-  return jwt.sign(
+export const generateToken = (sub: string, userType: UserType, refreshTokenVersion: number) => {
+  const accessToken = jwt.sign(
     {
       sub,
-      role,
+      userType,
     },
     process.env.JWT_SECRET!,
     { expiresIn: 60 * 60 },
   );
+
+  const refreshToken = jwt.sign(
+    {
+      sub,
+      userType,
+      version: refreshTokenVersion,
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: 60 * 60 * 24 * 7 },
+  );
+
+  return { accessToken, refreshToken };
 };
 
 export const decodeToken = (token: string) => {

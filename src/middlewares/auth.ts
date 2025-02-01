@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthenticationException from '../exceptions/authentication.exception.js';
 import { decodeToken } from '../utils/security.utils.js';
-import { Role } from '../utils/types.js';
+import { UserType } from '@prisma/client';
 
-export default function auth(allowedRoles: Role[] | Role) {
+export default function auth(allowedRoles: UserType[] | UserType) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
@@ -24,7 +24,7 @@ export default function auth(allowedRoles: Role[] | Role) {
 
       const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
-      const hasAllowedRole = decodedToken!.roles.some((role) => roles.includes(role as Role));
+      const hasAllowedRole = decodedToken!.roles.some((role) => roles.includes(role as UserType));
       if (!hasAllowedRole) {
         next(new AuthenticationException('Unauthorized'));
       }

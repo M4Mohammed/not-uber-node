@@ -18,55 +18,61 @@ datasource db {
 enum UserType {
   ADMIN
   DRIVER
-  PASSENGER
+  RIDER
+
+  @@map("user_type")
 }
 
 enum DriverStatus {
   ONLINE
   OFFLINE
+
+  @@map("driver_status")
 }
 
-model Rider {
+model User {
   id                  String   @id @default(uuid(7)) @db.VarChar
   createdAt           DateTime @default(now()) @map("created_at") @db.Timestamp
   updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamp
-  firstName           String   @map("first_name") @db.VarChar
-  lastName            String   @map("last_name") @db.VarChar
   email               String   @unique @db.VarChar
   password            String   @db.VarChar
+  firstName           String   @map("first_name") @db.VarChar
+  lastName            String   @map("last_name") @db.VarChar
   dateOfBirth         DateTime @map("date_of_birth") @db.Timestamp
-  refreshTokenVersion Int?     @map("refresh_token_version") @db.Integer
+  gender              String   @db.VarChar
+  phoneNumber         String   @unique @map("phone_number") @db.VarChar
+  city                String   @db.VarChar
+  state               String   @db.VarChar
+  nationalId          String   @map("national_id") @db.VarChar
+  refreshTokenVersion Int?     @default(0) @map("refresh_token_version") @db.Integer
   isDeleted           Boolean  @default(false) @map("is_deleted") @db.Boolean
+  userType            UserType @map("user_type")
+  rider               Rider?
+  driver              Driver?
+
+  @@index([id])
+  @@map("users")
+}
+
+model Rider {
+  id        String  @id @default(uuid(7)) @db.VarChar
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique @map("user_id") @db.VarChar
+  isDeleted Boolean @default(false) @map("is_deleted") @db.Boolean
 
   //rider profile
-  gender      String  @db.VarChar
-  city        String  @db.VarChar
-  state       String  @db.VarChar
-  nationalId  String  @map("national_id") @db.VarChar
-  phoneNumber String  @unique @map("phone_number") @db.VarChar
-  rating      Decimal @default(0) @db.Decimal
-  trip        Trip[]
+  rating Decimal @default(0) @db.Decimal
+  trip   Trip[]
 
   @@index([id])
   @@map("riders")
 }
 
 model Driver {
-  id                  String   @id @default(uuid(7)) @db.VarChar
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamp
-  email               String   @unique @db.VarChar
-  firstName           String   @map("first_name") @db.VarChar
-  lastName            String   @map("last_name") @db.VarChar
-  dateOfBirth         DateTime @map("date_of_birth") @db.Timestamp
-  gender              String   @db.VarChar
-  nationalId          String   @map("national_id") @db.VarChar
-  city                String   @db.VarChar
-  state               String   @db.VarChar
-  phoneNumber         String   @unique @map("phone_number") @db.VarChar
-  password            String   @db.VarChar
-  refreshTokenVersion Int?     @map("refresh_token_version") @db.Integer
-  isDeleted           Boolean  @default(false) @map("is_deleted") @db.Boolean
+  id        String  @id @default(uuid(7)) @db.VarChar
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique @map("user_id") @db.VarChar
+  isDeleted Boolean @default(false) @map("is_deleted") @db.Boolean
 
   //driver profile
   licenseNumber String       @unique @map("license_number") @db.VarChar
@@ -75,6 +81,7 @@ model Driver {
   trip          Trip[]
 
   @@index([id])
+  @@map("drivers")
 }
 
 model Vehicle {
@@ -99,6 +106,8 @@ enum RideStatus {
   COMPLETED
   CANCELLED
   SCHEDULED
+
+  @@map("ride_status")
 }
 
 model Trip {
