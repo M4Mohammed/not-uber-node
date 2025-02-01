@@ -8,6 +8,8 @@ import { getReasonPhrase } from 'http-status-codes';
 import driverRouter from './drivers/driver.router.js';
 import errorHandler from './middlewares/error.handler.js';
 import riderRouter from './riders/rider.router.js';
+import authController from './auth/auth.controller.js';
+import authRouter from './auth/auth.router.js';
 
 dotenv.config();
 const app = express();
@@ -30,10 +32,11 @@ app.use(
 app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/v1/drivers', driverRouter);
 app.use('/api/v1/riders', riderRouter);
-app.use('/api/v1/auth');
+app.use('/api/v1/auth', authRouter);
 
 app.use(errorHandler);
 

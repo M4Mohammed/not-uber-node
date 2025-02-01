@@ -2,6 +2,8 @@ import express from 'express';
 import driverController from './driver.controller.js';
 import { validate } from '../middlewares/validation.middleware.js';
 import { createDriverSchema, findDriverByIdSchema } from './driver.schema.js';
+import auth from '../middlewares/auth.js';
+import { UserType } from '@prisma/client';
 
 const router = express.Router();
 

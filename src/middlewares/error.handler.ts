@@ -1,5 +1,4 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import { JsonWebTokenError } from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 import AuthenticationException from '../exceptions/authentication.exception.js';
@@ -10,6 +9,9 @@ import IllegalStateException from '../exceptions/illegal.state.exception.js';
 import { Prisma } from '@prisma/client';
 import logger from '../utils/logger.js';
 import SystemConflictException from '../exceptions/system.conflict.exception.js';
+import jwt from 'jsonwebtoken';
+
+const { JsonWebTokenError } = jwt;
 
 const errorHandler: ErrorRequestHandler = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {

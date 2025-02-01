@@ -45,7 +45,7 @@ class RiderService {
           lastName: createRiderDto.lastName,
           gender: createRiderDto.gender,
           phoneNumber: createRiderDto.phoneNumber,
-          dateOfBirth: createRiderDto.dateOfBirth,
+          dateOfBirth: new Date(createRiderDto.dateOfBirth),
           nationalId: createRiderDto.nationalId,
           city: createRiderDto.city,
           state: createRiderDto.state,

@@ -15,7 +15,7 @@ export const createDriverSchema = z.object({
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
     firstName: z.string().min(2),
     lastName: z.string().min(2),
-    dateOfBirth: z.date().refine(
+    dateOfBirth: z.coerce.date().refine(
       (dob) => {
         const age = new Date().getFullYear() - dob.getFullYear();
         return age >= 21;

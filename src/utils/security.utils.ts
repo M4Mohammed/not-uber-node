@@ -4,14 +4,14 @@ import { DecodedToken } from './types.js';
 import { UserType } from '@prisma/client';
 
 export const verifyPassword = async (plainPassword: string, hashedPassword: string) => {
-  return argon2.verify(plainPassword, hashedPassword);
+  return argon2.verify(hashedPassword, plainPassword);
 };
 
 export const hashPassword = async (plainPassword: string) => {
   return argon2.hash(plainPassword, {
     type: argon2.argon2id,
-    memoryCost: 47104,
-    timeCost: 1,
+    memoryCost: 12288,
+    timeCost: 3,
     parallelism: 1,
   });
 };

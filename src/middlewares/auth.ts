@@ -4,7 +4,7 @@ import { decodeToken } from '../utils/security.utils.js';
 import { UserType } from '@prisma/client';
 
 export default function auth(allowedRoles: UserType[] | UserType) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
 

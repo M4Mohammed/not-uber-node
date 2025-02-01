@@ -45,7 +45,7 @@ class DriverService {
           lastName: createDriverDto.lastName,
           gender: createDriverDto.gender,
           phoneNumber: createDriverDto.phoneNumber,
-          dateOfBirth: createDriverDto.dateOfBirth,
+          dateOfBirth: new Date(createDriverDto.dateOfBirth),
           nationalId: createDriverDto.nationalId,
           city: createDriverDto.city,
           state: createDriverDto.state,
