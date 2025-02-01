@@ -13,6 +13,18 @@ class AuthController {
       next(error);
     }
   };
+
+  refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const { refreshToken } = req.body;
+
+    try {
+      const tokens = await authService.refreshToken(refreshToken);
+
+      return res.status(StatusCodes.OK).json(tokens);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();

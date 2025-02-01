@@ -44,7 +44,7 @@ model User {
   city                String   @db.VarChar
   state               String   @db.VarChar
   nationalId          String   @map("national_id") @db.VarChar
-  refreshTokenVersion Int?     @default(0) @map("refresh_token_version") @db.Integer
+  refreshTokenVersion Int      @default(0) @map("refresh_token_version") @db.Integer
   isDeleted           Boolean  @default(false) @map("is_deleted") @db.Boolean
   userType            UserType @map("user_type")
   rider               Rider?
