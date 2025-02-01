@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthenticationException from '../exceptions/authentication.exception.js';
-import { decodeToken } from '../utils/security.utils.js';
+import { decodeToken, isTokenRevoked } from '../utils/security.utils.js';
 import { UserType } from '@prisma/client';
 
 export default function auth(allowedRoles: UserType[] | UserType) {
-  return (req: Request, _res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
 
@@ -20,6 +20,11 @@ export default function auth(allowedRoles: UserType[] | UserType) {
       const decodedToken = decodeToken(token);
       if (!decodedToken) {
         next(new AuthenticationException('Invalid token'));
+      }
+
+      const isRevoked = await isTokenRevoked(decodedToken!.jti);
+      if (isRevoked) {
+        next(new AuthenticationException('Unauthorized, token revoked'));
       }
 
       const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];

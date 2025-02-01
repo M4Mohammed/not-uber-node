@@ -37,6 +37,17 @@ class AuthService {
 
     return generateToken(user.id, user.userType, user.refreshTokenVersion);
   };
+
+  logoutFromAllDevices = async (refreshToken: string) => {
+    const { sub } = decodeToken(refreshToken)!;
+
+    await prisma.user.update({
+      where: { id: sub },
+      data: {
+        refreshTokenVersion: { increment: 1 },
+      },
+    });
+  };
 }
 
 export default new AuthService();

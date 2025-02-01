@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { DecodedToken } from './types.js';
 import { UserType } from '@prisma/client';
+import { createClient } from 'redis';
+
+const redis = createClient({ url: process.env.REDIS_URL });
 
 export const verifyPassword = async (plainPassword: string, hashedPassword: string) => {
   return argon2.verify(hashedPassword, plainPassword);
@@ -45,4 +48,13 @@ export const decodeToken = (token: string) => {
   }
 
   return jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
+};
+
+export const blackListToken = async (jti: string) => {
+  await redis.set(jti, 'revoked', { EX: 60 * 60 * 24 * 7 });
+};
+
+export const isTokenRevoked = async (jti: string) => {
+  const result = await redis.get(jti);
+  return result === 'revoked';
 };

@@ -25,6 +25,18 @@ class AuthController {
       next(error);
     }
   };
+
+  logoutFromAllDevices = async (req: Request, res: Response, next: NextFunction) => {
+    const { refreshToken } = req.body;
+
+    try {
+      await authService.logoutFromAllDevices(refreshToken);
+
+      return res.status(StatusCodes.OK).json({ message: 'Logged out from all devices' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();

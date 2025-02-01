@@ -9,7 +9,6 @@ const prisma: PrismaClient =
   global.prisma ||
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? [{ emit: 'event', level: 'query' }] : ['warn', 'error'],
-
   });
 
 prisma.$on('query' as never, (e: Prisma.QueryEvent) => {

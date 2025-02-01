@@ -10,13 +10,10 @@ class DriverController {
     const size = Number(req.query.size) || 10;
 
     try {
-      const {
-        drivers,
-        currentPage,
-        itemsPerPage,
-        totalItems,
-        totalPages,
-      } = await driverService.findAllDrivers({ page, size });
+      const { drivers, currentPage, itemsPerPage, totalItems, totalPages } = await driverService.findAllDrivers({
+        page,
+        size,
+      });
 
       return res.status(StatusCodes.OK).json(
         new PaginatedResponse(drivers, {

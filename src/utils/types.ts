@@ -15,8 +15,7 @@ export class PaginatedResponse<T> {
       totalItems: number;
       totalPages: number;
     },
-  ) {
-  }
+  ) {}
 }
 
 export const PaginationSchema = z.object({
