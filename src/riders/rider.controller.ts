@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import riderService from './rider.service.js';
-import { PaginatedResponse, PaginationParams } from '../utils/types.js';
+import { PaginatedResponse } from '../utils/types.js';
 import { StatusCodes } from 'http-status-codes';
 import { CreateRiderDto } from './DTOs/rider.dto.js';
 

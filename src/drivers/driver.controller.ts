@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { PaginatedResponse, PaginationParams } from '../utils/types.js';
+import { PaginatedResponse } from '../utils/types.js';
 import driverService from './driver.service.js';
 import { CreateDriverDto } from './DTOs/driver.dto.js';
-import { any } from 'zod';
 
 class DriverController {
   findDrivers = async (req: Request, res: Response, next: NextFunction) => {
