@@ -9,5 +9,19 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      dependencies-update:
+        patterns:
+          - "*"
+    versioning-strategy: "increase"
+    allow:
+      - dependency-type: "production"
     ignore:
-      - dependency-name: "lodash"
+      - dependency-name: "node"
+        versions:
+          - "<20.0.0"
+          - ">=21.0.0"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
